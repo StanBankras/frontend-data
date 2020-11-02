@@ -8,8 +8,15 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@esri/arcgis-rest-request": "^2.20.0",
     "core-js": "^3.6.5",
-    "vue": "^3.0.0"
+    "cross-fetch": "^3.0.6",
+    "dotenv": "^8.2.0",
+    "isomorphic-form-data": "^2.0.0",
+    "node-fetch": "^2.6.1",
+    "point-in-polygon": "^1.0.1",
+    "vue": "^3.0.0",
+    "vuex": "^4.0.0-rc.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
