@@ -9,7 +9,7 @@ const zones = environmentalZones.default;
 // Found out how to get geojson via: https://gis.stackexchange.com/questions/206313/accessing-geojson-from-arcgis-online-rest-api
 const uri = 'https://services.arcgis.com/kE0BiyvJHb5SwQv7/arcgis/rest/services/Milieuzones_NL/FeatureServer/0/query?f=geojson&where=1%3D1&returnGeometry=true';
 
-export async function getEnvironmentalZones() {
+async function fetchEnvironmentalZones() {
   try {
     const data = await request(uri);
     let formattedData = data.features.map(feature => {
@@ -40,6 +40,17 @@ export async function getEnvironmentalZones() {
 
 function getPolygons(geojsonCoordinates) {
   return geojsonCoordinates.map(x => { return [ x[0], x[1] ] });
+}
+
+export function getEnvironmentalZones() {
+  return fetchEnvironmentalZones().then(result => {
+    const polygons = [];
+    result.forEach(x => {
+      x.polygons
+        .forEach(polygon => polygons.push({ municipality: x.municipality, polygon: polygon }));
+    });
+    return polygons;
+  });
 }
 
 export default { getEnvironmentalZones };
