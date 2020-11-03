@@ -1,14 +1,16 @@
 <template>
-  <chart v-if="ready"/>
+  <smiley/>
+  <bar-chart v-if="ready"/>
 </template>
 
 <script>
-import Chart from './components/PracticeChart';
+import BarChart from './components/practice/BarChart';
+import Smiley from './components/practice/Smiley';
 
 export default {
   name: "App",
   components: {
-    Chart
+    BarChart, Smiley
   },
   data() {
     return {

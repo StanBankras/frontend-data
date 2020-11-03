@@ -59,11 +59,19 @@ export default {
           .attr('fill', 'red');
 
       const xAxis = d3.axisBottom()
-        .scale(this.xScale);
+        .scale(this.xScale)
+        .ticks(10);
+
+      const yAxis = d3.axisLeft()
+        .scale(this.yScale);
 
       this.svg.append('g')
         .attr("transform", "translate(0, 260)")
         .call(xAxis);
+
+      this.svg.append('g')
+        .attr("transform", "translate(40,0)")
+        .call(yAxis);
 
       this.svg.node();
     },
