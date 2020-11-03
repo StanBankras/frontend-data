@@ -1,24 +1,22 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <p v-for="zone in environmentZones" :key="zone.polygon">
-    {{ zone.municipality }}
-  </p>
-  <p>{{ parkingData.length }}</p>
+  <chart v-if="ready"/>
 </template>
 
 <script>
+import Chart from './components/PracticeChart';
+
 export default {
   name: "App",
-  computed: {
-    environmentZones() {
-      return this.$store.getters.environmentZones;
-    },
-    parkingData() {
-      return this.$store.getters.parkingData;
+  components: {
+    Chart
+  },
+  data() {
+    return {
+      ready: false
     }
   },
   mounted() {
-    this.$store.dispatch("initializeData");
+    this.$store.dispatch("initializeData").then(() => this.ready = true);
   },
 };
 </script>

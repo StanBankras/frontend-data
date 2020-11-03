@@ -1,4 +1,4 @@
-// import { getData } from '../utils/helpers';
+import { getData } from '../utils/helpers';
 import * as tariffs from '../assets/data/tariffsFormatted.json';
 
 const tariffsObject = tariffs.default;
@@ -7,14 +7,13 @@ export async function getTariffs(areaId) {
   try {
     if (Object.prototype.hasOwnProperty.call(tariffsObject, areaId)) return tariffsObject[areaId];
     console.log(areaId);
-    return undefined;
-    // const uuidReq = await getData('https://opendata.rdw.nl/resource/mz4f-59fw.json?areaid=' + areaId); // https://opendata.rdw.nl/Parkeren/Open-Data-Parkeren-PARKEERGEBIED/mz4f-59fw
-    // if (!uuidReq || !uuidReq[0] || !uuidReq[0].uuid) return null;
+    const uuidReq = await getData('https://opendata.rdw.nl/resource/mz4f-59fw.json?areaid=' + areaId); // https://opendata.rdw.nl/Parkeren/Open-Data-Parkeren-PARKEERGEBIED/mz4f-59fw
+    if (!uuidReq || !uuidReq[0] || !uuidReq[0].uuid) return null;
 
-    // const uuidData = await getData('https://npropendata.rdw.nl//parkingdata/v2/static/' + uuidReq[0].uuid);
-    // if (!uuidData) return null;
+    const uuidData = await getData('http://cors-anywhere.herokuapp.com/https://npropendata.rdw.nl//parkingdata/v2/static/' + uuidReq[0].uuid);
+    if (!uuidData) return null;
 
-    // return formatTariffData((uuidData.parkingFacilityInformation.tariffs || []));
+    return formatTariffData((uuidData.parkingFacilityInformation.tariffs || []));
   } catch (err) {
     console.log(err);
     return null;
