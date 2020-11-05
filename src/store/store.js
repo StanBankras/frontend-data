@@ -2,7 +2,7 @@ import { createStore } from 'vuex';
 import { getEnvironmentalZones } from '../utils/esri';
 import { isCoordInPolygon, getCenterCoord } from '../utils/helpers';
 import { newDataset } from '../utils/mergedata';
-import { getTariffs } from '../services/tariffservice';
+import { getNpropendata } from '../services/nprservice';
 
 const settings = {
   endpoints: [
@@ -71,7 +71,9 @@ const store = createStore({
         })
         .map(async (x) => {
           const obj = x;
-          obj.tariffs = await getTariffs(obj.areaId);
+          const npropendata = await getNpropendata(obj.areaId);
+          obj.tariffs = npropendata.tariffs;
+          obj.specifications = npropendata.specifications;
           obj.overallAverageTariff = Object.values(obj.tariffs || [])
             .map(x => x.averageTariff)
             .reduce((prev, cur) => prev + cur, 0) / Object.keys(obj.tariffs || []).length;
