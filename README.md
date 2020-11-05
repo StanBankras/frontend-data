@@ -1,5 +1,4 @@
-# Functional Programming
-_Cleaning raw survey data so it becomes usable_
+# Frontend Data
 
 ![design](https://i.imgur.com/a4vntCt.jpg)
 
