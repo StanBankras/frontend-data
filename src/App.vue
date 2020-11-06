@@ -6,7 +6,17 @@
         Sankey
       </div>
       <div id="table">
-        Table
+        <div class="select">
+          <p>Statistics for</p>
+          <select name="" id="">
+            <option value="all">All</option>
+            <option value="all">All</option>
+            <option value="all">All</option>
+            <option value="all">All</option>
+          </select>
+          <p>All parkings</p>
+        </div>
+        <table-comp/>
       </div>
     </div>
     <div id="map">
@@ -16,7 +26,12 @@
 </template>
 
 <script>
+import TableComp from './components/Table';
+
 export default {
+  components: {
+    TableComp
+  },
   name: "App",
   data() {
     return {
@@ -49,6 +64,9 @@ h1 {
   margin-bottom: 2rem;
   margin-top: 0;
 }
+p {
+  margin: 0;
+}
 #main-wrapper {
   max-height: 100vw;
   min-height: 100vw;
@@ -57,12 +75,30 @@ h1 {
   margin-left: 10rem;
   margin-top: 4rem;
   .left {
-    max-width: 600px;
+    max-width: 675px;
+    margin-right: 4rem;
     #sankey {
       width: 100%;
-      height: 300px;
+      height: 350px;
       background-color: red;
       margin-bottom: 2rem;
+    }
+    #table {
+      .select {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        p {
+          font-weight: bold;
+          font-size: 20px;
+        }
+        select {
+          width: 150px;
+          padding: 0 10px !important;
+          margin: 0 1.3rem;
+          height: 40px;
+        }
+      }
     }
   }
 }
