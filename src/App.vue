@@ -20,7 +20,7 @@
       </div>
     </div>
     <div id="map">
-      {{ selectedZone }}
+      <p @click="selectMunicipality(undefined)">{{ selectedZone ? selectedZone.properties.name : '' }}</p>
       <map-comp width="1000" height="1000" v-if="ready"/>
     </div>
   </div>
@@ -51,6 +51,11 @@ export default {
     },
     selectedZone() {
       return this.$store.getters.selectedZone;
+    }
+  },
+  methods: {
+    selectMunicipality(zone) {
+      this.$store.commit('SET_SELECTED_ZONE', zone);
     }
   }
 };

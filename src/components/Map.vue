@@ -26,7 +26,7 @@
       <path
         v-for="zone in environmentZoneCities"
         :key="zone.properties.code"
-        @click="selectMunicipality(zone.properties.name)"
+        @click="selectMunicipality(zone)"
         :d="pathGenerator(zone)"
       />
     </g>
@@ -38,13 +38,14 @@
 import * as d3 from 'd3';
 import * as provinces from '@/assets/data/provinces.json';
 import * as municipalities from '@/assets/data/townships.json'; // https://www.webuildinternet.com/articles/2015-07-19-geojson-data-of-the-netherlands/townships.geojson
+import { getCenterCoordFromPolygon } from '@/utils/helpers';
 
 export default {
   computed: {
     projection() {
       return d3.geoMercator()
-        .center([4.55, 52.1])
-        .scale(17000)
+        .center(this.centerPoint)
+        .scale(this.selectedZone ? 30000 : 17000)
     },
     pathGenerator() {
       return d3.geoPath().projection(this.projection);
@@ -67,18 +68,27 @@ export default {
       return this.$store.getters.parkingData;
     },
     parkingsMapped() {
-      return this.parkingData.map(parking => {
-        return {
-          id: parking.areaId,
-          x: parking.centerCoord ? this.projection(parking.centerCoord)[0] : 0,
-          y: parking.centerCoord? this.projection(parking.centerCoord)[1] : 0
-        }
+      return this.parkingData
+        .filter(p => p.centerCoord.length > 1 && !isNaN(p.centerCoord[0]) && !isNaN(p.centerCoord[1]))
+        .map(parking => {
+          return {
+            id: parking.areaId,
+            x: this.projection(parking.centerCoord)[0],
+            y: this.projection(parking.centerCoord)[1]
+          }
       })
+    },
+    selectedZone() {
+      return this.$store.getters.selectedZone;
+    },
+    centerPoint() {
+      if(!this.selectedZone) return [4.55, 52.1];
+      return getCenterCoordFromPolygon(this.selectedZone.geometry.coordinates[0][0]);
     }
   },
   methods: {
-    selectMunicipality(name) {
-      this.$store.commit('SET_SELECTED_ZONE', name);
+    selectMunicipality(zone) {
+      this.$store.commit('SET_SELECTED_ZONE', zone);
     }
   }
 }

@@ -52,6 +52,13 @@ export function getCenterCoord(coordinates) {
   return longLat;
 }
 
+export function getCenterCoordFromPolygon(polygon) {
+  let latTotal = polygon.reduce((acc, curr) => acc + curr[1], 0);
+  let longTotal = polygon.reduce((acc, curr) => acc + curr[0], 0);
+
+  return [ longTotal / (polygon.length), latTotal / (polygon.length) ];
+}
+
 function getEnvironmentalZones(zones) {
   const polygons = [];
   zones.forEach(zone => {
