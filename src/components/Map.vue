@@ -55,8 +55,7 @@ export default {
       return this.$store.getters.environmentZones.features;
     },
     environmentZoneNames() {
-      const names = this.environmentZones.map(x => x.properties.Gemeente.toLowerCase().replace('-', ' '));
-      return names;
+      return this.environmentZones.map(x => x.properties.Gemeente.toLowerCase().replace('-', ' '));
     },
     environmentZoneCities() {
       return municipalities.default.features
@@ -94,6 +93,6 @@ export default {
   fill: rgba(0, 0, 0, 0.1);
 }
 .municipalities {
-  fill: rgba(255, 255, 0, 0.233);
+  fill: rgba(255, 255, 0, 0.438);
 }
 </style>

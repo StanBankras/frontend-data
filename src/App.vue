@@ -20,7 +20,7 @@
       </div>
     </div>
     <div id="map">
-      <map-comp width="1000" height="1000" v-if="ready"/>
+      <map-comp width="1000" height="1000"/>
     </div>
   </div>
 </template>
