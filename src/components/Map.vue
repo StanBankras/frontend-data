@@ -45,7 +45,7 @@ export default {
     projection() {
       return d3.geoMercator()
         .center(this.centerPoint)
-        .scale(this.selectedZone ? 30000 : 17000)
+        .scale(this.selectedZone ? 50000 : 17000)
     },
     pathGenerator() {
       return d3.geoPath().projection(this.projection);
@@ -95,6 +95,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+path, circle, g {
+  transition: .7s ease-in-out;
+}
 .provinces {
   fill: #ddb89b;
   stroke-width: 5px;
@@ -113,7 +116,6 @@ export default {
   path {
     stroke: black;
     stroke-width: 1px;
-    transition: .2s;
     &:hover {
       stroke-width: 3px;
       cursor: pointer;
