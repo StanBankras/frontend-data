@@ -19,7 +19,10 @@ export async function getNpropendata(areaId) {
     };
   } catch (err) {
     console.log(err);
-    return null;
+    return {
+      tariffs: [],
+      specifications: []
+    };
   }
 } 
 

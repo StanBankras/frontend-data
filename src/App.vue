@@ -3,10 +3,10 @@
     <div class="left">
       <h1>Is green transportation supported more in parking places that are situated in environmental zones?</h1>
       <div id="sankey">
-        Sankey
+        sankey
       </div>
       <div id="table">
-        Table
+        <bar-chart v-if="ready"/>
       </div>
     </div>
     <div id="map">
@@ -16,7 +16,12 @@
 </template>
 
 <script>
+import BarChart from './components/practice/BarChart';
+
 export default {
+  components: {
+    BarChart
+  },
   name: "App",
   data() {
     return {
@@ -25,7 +30,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch("initializeData").then(() => {
-      console.log(this.data);
+      console.log(this.data.filter(x => x.specifications && x.specifications[0] && x.specifications[0].usage && x.environmentalZone));
       this.ready = true;
     });
   },
