@@ -20,7 +20,8 @@
       </div>
     </div>
     <div id="map">
-      <map-comp width="1000" height="1000"/>
+      {{ selectedZone }}
+      <map-comp width="1000" height="1000" v-if="ready"/>
     </div>
   </div>
 </template>
@@ -47,6 +48,9 @@ export default {
   computed: {
     data() {
       return this.$store.getters.parkingData;
+    },
+    selectedZone() {
+      return this.$store.getters.selectedZone;
     }
   }
 };

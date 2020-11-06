@@ -26,6 +26,7 @@
       <path
         v-for="zone in environmentZoneCities"
         :key="zone.properties.code"
+        @click="selectMunicipality(zone.properties.name)"
         :d="pathGenerator(zone)"
       />
     </g>
@@ -74,6 +75,11 @@ export default {
         }
       })
     }
+  },
+  methods: {
+    selectMunicipality(name) {
+      this.$store.commit('SET_SELECTED_ZONE', name);
+    }
   }
 }
 </script>
@@ -94,5 +100,14 @@ export default {
 }
 .municipalities {
   fill: rgba(255, 255, 0, 0.438);
+  path {
+    stroke: black;
+    stroke-width: 1px;
+    transition: .2s;
+    &:hover {
+      stroke-width: 3px;
+      cursor: pointer;
+    }
+  }
 }
 </style>

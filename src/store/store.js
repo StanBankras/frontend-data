@@ -22,12 +22,14 @@ const store = createStore({
   state() {
     return {
       parkingData: [],
-      environmentZones: []
+      environmentZones: [],
+      selectedZone: undefined
     }
   },
   getters: {
     parkingData(state) { return state.parkingData },
-    environmentZones(state) { return state.environmentZones }
+    environmentZones(state) { return state.environmentZones },
+    selectedZone(state) { return state.selectedZone }
   },
   mutations: {
     SET_PARKING_DATA(state, payload) {
@@ -35,6 +37,9 @@ const store = createStore({
     },
     SET_ENVIRONMENT_ZONES(state, payload) {
       state.environmentZones = payload;
+    },
+    SET_SELECTED_ZONE(state, payload) {
+      state.selectedZone = payload;
     }
   },
   actions: {
