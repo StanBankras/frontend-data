@@ -53,4 +53,4 @@ export function getEnvironmentalZones() {
   });
 }
 
-export default { getEnvironmentalZones };
+export default { getEnvironmentalZones, fetchEnvironmentalZones };

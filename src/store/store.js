@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
-import { getEnvironmentalZones } from '../utils/esri';
-import { isCoordInPolygon, getCenterCoord } from '../utils/helpers';
+import { fetchEnvironmentalZones } from '../services/zoneservice';
+import { isCoordInEnvironmentalZone, getCenterCoord } from '../utils/helpers';
 import { newDataset } from '../utils/mergedata';
 import { getNpropendata } from '../services/nprservice';
 
@@ -41,11 +41,11 @@ const store = createStore({
     async initializeData({ commit }) {
       const dataset = newDataset(settings.endpoints, settings.sharedKey);
 
-      const requestedData = await Promise.all([getEnvironmentalZones(), dataset]);
+      const requestedData = await Promise.all([fetchEnvironmentalZones(), dataset]);
       const data = requestedData[1];
       const environmentalZones = requestedData[0];
 
-      commit('SET_ENVIRONMENT_ZONES', environmentalZones);
+      commit('SET_ENVIRONMENT_ZONES', environmentalZones)
 
       const filteredData = data
         .filter(x => Object.keys(settings.keys).every(key => {
@@ -66,7 +66,7 @@ const store = createStore({
         })
         .map(x => {
           const obj = x;
-          obj.environmentalZone = isCoordInPolygon(obj.centerCoord, environmentalZones);
+          obj.environmentalZone = isCoordInEnvironmentalZone(obj.centerCoord, environmentalZones);
           return obj;
         })
         .map(async (x) => {

@@ -52,10 +52,25 @@ export function getCenterCoord(coordinates) {
   return longLat;
 }
 
-export function isCoordInPolygon(centerCoord, polygons) {
+function getEnvironmentalZones(zones) {
+  const polygons = [];
+  zones.forEach(zone => {
+    if(zone.geometry.type === 'MultiPolygon') {
+      zone.geometry.coordinates.forEach(coordinateArray => {
+        polygons.push({ municipality: zone.properties.Gemeente, polygon: coordinateArray });
+      });      
+    } else {
+      polygons.push({ municipality: zone.properties.Gemeente, polygon: zone.geometry.coordinates })
+    }
+  });
+  return polygons;
+}
+
+export function isCoordInEnvironmentalZone(centerCoord, geojson) {
+  const polygons = getEnvironmentalZones(geojson.features);
   let zone = undefined;
   for(let i = 0;i < polygons.length;i++) {
-    if(inside(centerCoord, polygons[i].polygon)) {
+    if(inside(centerCoord, polygons[i].polygon[0])) {
       zone = polygons[i].municipality; 
       break;
     }

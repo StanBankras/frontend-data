@@ -20,17 +20,18 @@
       </div>
     </div>
     <div id="map">
-      Map
+      <map-comp width="1000" height="1000" v-if="ready"/>
     </div>
   </div>
 </template>
 
 <script>
 import TableComp from './components/Table';
+import MapComp from './components/Map';
 
 export default {
   components: {
-    TableComp
+    TableComp, MapComp
   },
   name: "App",
   data() {
@@ -40,7 +41,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch("initializeData").then(() => {
-      console.log(this.data.filter(x => x.specifications && x.specifications[0] && x.specifications[0].usage && x.environmentalZone));
       this.ready = true;
     });
   },
@@ -57,7 +57,6 @@ body {
   margin: 0;
   min-height: 100vw;
   max-height: 100vw;
-  overflow: hidden;
   background-color: #fffaec;
 }
 h1 {
