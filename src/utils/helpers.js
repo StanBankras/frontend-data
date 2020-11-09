@@ -85,3 +85,29 @@ export function isCoordInEnvironmentalZone(centerCoord, geojson) {
   return zone;
 }
 
+function getMunicipalityZones(zones) {
+  const polygons = [];
+  zones.forEach(zone => {
+    if(zone.geometry.type === 'MultiPolygon') {
+      zone.geometry.coordinates.forEach(coordinateArray => {
+        polygons.push({ municipality: zone.properties.name, polygon: coordinateArray });
+      });      
+    } else {
+      polygons.push({ municipality: zone.properties.name, polygon: zone.geometry.coordinates })
+    }
+  });
+  return polygons;
+}
+
+export function isCoordInMunicipality(centerCoord, geojson) {
+  const polygons = getMunicipalityZones(geojson.features);
+  let zone = undefined;
+  for(let i = 0;i < polygons.length;i++) {
+    if(inside(centerCoord, polygons[i].polygon[0])) {
+      zone = polygons[i].municipality; 
+      break;
+    }
+  }
+  return zone;
+}
+

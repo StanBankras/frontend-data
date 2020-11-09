@@ -8,12 +8,25 @@
       />
     </g>
     <g class="parkings">
-      <circle
-        v-for="parking in parkingsMapped"
-        :key="parking.id"
-        r="5"
-        :cx="parking.x"
-        :cy="parking.y"/>
+      <g>
+        <circle
+          v-for="parking in parkingsMapped"
+          :key="parking.id"
+          r="5"
+          :cx="parking.x"
+          :cy="parking.y"/>
+      </g>
+      <g class="municipality-parkings">
+        <circle
+          fill="red"
+          v-for="parking in filteredParkingsMapped"
+          :key="parking.id"
+          r="5"
+          :cx="parking.x"
+          :cy="parking.y"
+          class="active"
+          :class="{ ezone: parking.ezone }"/>
+      </g>
     </g>
     <g class="environment-zones">
       <path
@@ -38,11 +51,13 @@
 // Help from https://makeshiftinsights.com/blog/d3-vue-choropleth/
 import * as d3 from 'd3';
 import * as provinces from '@/assets/data/provinces.json';
-import * as municipalities from '@/assets/data/townships.json'; // https://www.webuildinternet.com/articles/2015-07-19-geojson-data-of-the-netherlands/townships.geojson
 import { getCenterCoordFromPolygon } from '@/utils/helpers';
 
 export default {
   computed: {
+    municipalities() {
+      return this.$store.getters.municipalities;
+    },
     projection() {
       return d3.geoMercator()
         .center(this.centerPoint)
@@ -61,7 +76,7 @@ export default {
       return this.environmentZones.map(x => x.properties.Gemeente.toLowerCase().replace('-', ' '));
     },
     environmentZoneCities() {
-      return municipalities.default.features
+      return this.municipalities.features
         .filter(x => this.environmentZoneNames.includes(x.properties.name.toLowerCase()
         .replace('-', ' ')));
     },
@@ -77,7 +92,7 @@ export default {
             x: this.projection(parking.centerCoord)[0],
             y: this.projection(parking.centerCoord)[1]
           }
-      })
+      });
     },
     selectedZone() {
       return this.$store.getters.selectedZone;
@@ -85,6 +100,26 @@ export default {
     centerPoint() {
       if(!this.selectedZone) return [4.69, 52.1];
       return getCenterCoordFromPolygon(this.selectedZone.geometry.coordinates[0][0]);
+    },
+    parkingsPerMunicipality() {
+      const data = this.$store.getters.parkingsPerMunicipality;
+      console.log(data);
+      return data;
+    },
+    filteredParkingData() {
+      return this.selectedZone ? this.parkingsPerMunicipality[this.selectedZone.properties.name] : []
+    },
+    filteredParkingsMapped() {
+      return this.filteredParkingData
+        .filter(p => p.centerCoord.length > 1 && !isNaN(p.centerCoord[0]) && !isNaN(p.centerCoord[1]))
+        .map(parking => {
+          return {
+            ezone: parking.environmentalZone,
+            id: parking.areaId,
+            x: this.projection(parking.centerCoord)[0],
+            y: this.projection(parking.centerCoord)[1]
+          }
+      });
     }
   },
   methods: {
@@ -109,12 +144,21 @@ path, circle, g {
   stroke: #fffaec;
 }
 .environment-zones {
-  fill: rgba(255, 0, 0, 0.705);
+  fill: transparent;
   stroke: rgb(124, 0, 0);
   stroke-width: 2px;
 }
 .parkings {
-  fill: rgba(0, 0, 0, 0.1);
+  circle {
+    fill: rgba(0, 0, 0, 0.1);
+    &.active {
+      fill: red;
+    }
+    &.ezone {
+      fill: lightgreen;
+      z-index: 100;
+    }
+  }
 }
 .municipalities {
   path {
@@ -126,7 +170,8 @@ path, circle, g {
       cursor: pointer;
     }
     &.active {
-      fill: rgba(0, 255, 0, 0.438);
+      stroke-width: 3px;
+      fill: transparent;
     }
   }
 }

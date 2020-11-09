@@ -1,8 +1,9 @@
 import { createStore } from 'vuex';
 import { fetchEnvironmentalZones } from '../services/zoneservice';
-import { isCoordInEnvironmentalZone, getCenterCoord } from '../utils/helpers';
+import { isCoordInEnvironmentalZone, getCenterCoord, isCoordInMunicipality } from '../utils/helpers';
 import { newDataset } from '../utils/mergedata';
 import { getNpropendata } from '../services/nprservice';
+import * as municipalities from '@/assets/data/townships.json'; // https://www.webuildinternet.com/articles/2015-07-19-geojson-data-of-the-netherlands/townships.geojson
 
 const settings = {
   endpoints: [
@@ -22,14 +23,35 @@ const store = createStore({
   state() {
     return {
       parkingData: [],
+      parkingIdPerMunicipality: {},
       environmentZones: [],
-      selectedZone: undefined
+      selectedZone: undefined,
+      municipalities: municipalities.default
     }
   },
   getters: {
     parkingData(state) { return state.parkingData },
     environmentZones(state) { return state.environmentZones },
-    selectedZone(state) { return state.selectedZone }
+    selectedZone(state) { return state.selectedZone },
+    municipalities(state) { return state.municipalities },
+    parkingsPerMunicipality(state) {
+      const environmentZoneNames = state.environmentZones.features.map(x => x.properties.Gemeente.toLowerCase().replace('-', ' '));
+      const filteredMunicipalities = {
+        features: state.municipalities.features
+          .filter(x => environmentZoneNames.includes(x.properties.name.toLowerCase()
+          .replace('-', ' ')))
+      }
+
+      const map = {};
+      state.parkingData.slice().forEach(parking => {
+        const result = isCoordInMunicipality(parking.centerCoord, filteredMunicipalities);
+        if(!map.unknown) map.unknown = [];
+        if(!result) return map.unknown.push(parking.areaId);
+        if(!map[result]) map[result] = [];
+        return map[result].push(parking);
+      });
+      return map;
+    }
   },
   mutations: {
     SET_PARKING_DATA(state, payload) {
