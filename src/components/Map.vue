@@ -127,9 +127,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-path, circle, g {
-  transition: .7s ease;
-}
 .provinces {
   fill: #ddb89b;
   stroke-width: 5px;
@@ -166,5 +163,18 @@ path, circle, g {
       fill: transparent;
     }
   }
+}
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+.link-move {
+  transition: d 10s;
+}
+
+.link-enter-active,
+.link-leave-active {
+  transition: d 10s transform 10s;
 }
 </style>
