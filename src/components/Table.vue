@@ -7,8 +7,8 @@
     </div>
     <div class="row">
       <p class="title">% of spots with a charging point</p>
-      <p>9</p>
-      <p>9</p>
+      <p>{{ chargingPointPercentage.ezone }}</p>
+      <p>{{ chargingPointPercentage.nzone }}</p>
     </div>
     <div class="row">
       <p class="title">€ cost / hour parking</p>
@@ -22,6 +22,29 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  computed: {
+    selectedParkings() {
+      return this.$store.getters.selectedZoneParkings;
+    },
+    selectedParkingsMapped() {
+      return {
+        ezone: this.selectedParkings.filter(p => p.environmentalZone), // environmental zone
+        nzone: this.selectedParkings.filter(p => !p.environmentalZone) // normal zone
+      }
+    },
+    chargingPointPercentage() {
+      const parkings = this.selectedParkingsMapped;
+      return {
+        ezone: parkings.ezone.filter(p => p.chargingPoints).length / parkings.ezone.length * 100,
+        nzone: parkings.nzone.filter(p => p.chargingPoints).length / parkings.nzone.length * 100,
+      }
+    }
+  }
+}
+</script>
 
 <style lang="scss" scoped>
 .table {

@@ -8,15 +8,15 @@
       <div id="table">
         <div class="select">
           <p>Statistics for</p>
-          <select name="" id="">
-            <option value="all">All</option>
-            <option value="all">All</option>
-            <option value="all">All</option>
-            <option value="all">All</option>
+          <select @change="selectMunicipality()" v-model="zone" name="environmentZone" id="environmentZone">
+            <option
+              v-for="name in environmentZoneNames"
+              :key="name"
+              :value="name">{{ name }}</option>
           </select>
           <p>All parkings</p>
         </div>
-        <table-comp/>
+        <table-comp v-if="selectedZone"/>
       </div>
     </div>
     <div id="map">
@@ -28,6 +28,7 @@
 <script>
 import TableComp from './components/Table';
 import MapComp from './components/Map';
+import * as municipalities from '@/assets/data/townships.json';
 
 export default {
   components: {
@@ -36,7 +37,9 @@ export default {
   name: "App",
   data() {
     return {
-      ready: false
+      ready: false,
+      zone: undefined,
+      municipalities: municipalities.default
     }
   },
   mounted() {
@@ -50,11 +53,33 @@ export default {
     },
     selectedZone() {
       return this.$store.getters.selectedZone;
-    }
+    },
+    parkingData() {
+      return this.$store.getters.parkingData;
+    },
+    environmentZoneNames () {
+      return this.$store.getters.environmentZoneNames;
+    },
+    environmentZoneCities() {
+      return this.municipalities.features
+        .filter(x => this.environmentZoneNames.includes(x.properties.name.toLowerCase().replace('-', ' ')));
+    },
   },
   methods: {
-    selectMunicipality(zone) {
-      this.$store.commit('SET_SELECTED_ZONE', zone);
+    selectMunicipality() {
+      const zone = this.environmentZoneCities.find(x => x.properties.name.toLowerCase().replace('-', ' ') === this.zone);
+      if(!zone) return;
+      if(this.selectedZone && zone.properties.name === this.selectedZone.properties.name) {
+        this.$store.commit('SET_SELECTED_ZONE', undefined);
+      } else {
+        this.$store.commit('SET_SELECTED_ZONE', zone);
+      }
+    }
+  },
+  watch: {
+    selectedZone(oldVal) {
+      if(!oldVal) return;
+      this.zone = oldVal.properties.name.toLowerCase().replace('-', ' ');
     }
   }
 };

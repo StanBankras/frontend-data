@@ -30,13 +30,18 @@ const store = createStore({
   },
   getters: {
     parkingData(state) { return state.parkingData },
+    municipalityNames(getters) {
+      return municipalities.features
+        .filter(x => getters.environmentZoneNames.includes(x.properties.name.toLowerCase()
+        .replace('-', ' ')));
+    },
     environmentZones(state) { return state.environmentZones },
+    environmentZoneNames(state) { return (state.environmentZones.features || []).map(x => x.properties.Gemeente.toLowerCase().replace('-', ' ')) },
     selectedZone(state) { return state.selectedZone },
-    parkingsPerMunicipality(state) {
-      const environmentZoneNames = state.environmentZones.features.map(x => x.properties.Gemeente.toLowerCase().replace('-', ' '));
+    parkingsPerMunicipality(state, getters) {
       const filteredMunicipalities = {
         features: municipalities.features
-          .filter(x => environmentZoneNames.includes(x.properties.name.toLowerCase()
+          .filter(x => getters.environmentZoneNames.includes(x.properties.name.toLowerCase()
           .replace('-', ' ')))
       }
 
