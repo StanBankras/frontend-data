@@ -28,6 +28,7 @@
         :key="zone.properties.code"
         @click="selectMunicipality(zone)"
         :d="pathGenerator(zone)"
+        :class="{ active: zone.properties.name === (selectedZone ? selectedZone.properties.name : '') }"
       />
     </g>
   </svg>
@@ -45,7 +46,7 @@ export default {
     projection() {
       return d3.geoMercator()
         .center(this.centerPoint)
-        .scale(this.selectedZone ? 50000 : 17000)
+        .scale(this.selectedZone ? 50000 : 19000)
     },
     pathGenerator() {
       return d3.geoPath().projection(this.projection);
@@ -82,13 +83,17 @@ export default {
       return this.$store.getters.selectedZone;
     },
     centerPoint() {
-      if(!this.selectedZone) return [4.55, 52.1];
+      if(!this.selectedZone) return [4.69, 52.1];
       return getCenterCoordFromPolygon(this.selectedZone.geometry.coordinates[0][0]);
     }
   },
   methods: {
     selectMunicipality(zone) {
-      this.$store.commit('SET_SELECTED_ZONE', zone);
+      if(this.selectedZone && zone.properties.name === this.selectedZone.properties.name) {
+        this.$store.commit('SET_SELECTED_ZONE', undefined);
+      } else {
+        this.$store.commit('SET_SELECTED_ZONE', zone);
+      }
     }
   }
 }
@@ -96,7 +101,7 @@ export default {
 
 <style lang="scss" scoped>
 path, circle, g {
-  transition: .7s ease-in-out;
+  transition: .7s ease;
 }
 .provinces {
   fill: #ddb89b;
@@ -112,13 +117,16 @@ path, circle, g {
   fill: rgba(0, 0, 0, 0.1);
 }
 .municipalities {
-  fill: rgba(255, 255, 0, 0.438);
   path {
     stroke: black;
     stroke-width: 1px;
+    fill: rgba(255, 255, 0, 0.438);
     &:hover {
       stroke-width: 3px;
       cursor: pointer;
+    }
+    &.active {
+      fill: rgba(0, 255, 0, 0.438);
     }
   }
 }

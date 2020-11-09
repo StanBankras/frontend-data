@@ -20,7 +20,6 @@
       </div>
     </div>
     <div id="map">
-      <p @click="selectMunicipality(undefined)">{{ selectedZone ? selectedZone.properties.name : '' }}</p>
       <map-comp width="1000" height="1000" v-if="ready"/>
     </div>
   </div>
@@ -83,7 +82,7 @@ p {
   margin-left: 10rem;
   margin-top: 4rem;
   .left {
-    max-width: 675px;
+    max-width: 600px;
     margin-right: 4rem;
     #sankey {
       width: 100%;
@@ -108,6 +107,11 @@ p {
         }
       }
     }
+  }
+  #map {
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 }
 </style>
