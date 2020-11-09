@@ -25,19 +25,17 @@ const store = createStore({
       parkingData: [],
       parkingIdPerMunicipality: {},
       environmentZones: [],
-      selectedZone: undefined,
-      municipalities: municipalities.default
+      selectedZone: undefined
     }
   },
   getters: {
     parkingData(state) { return state.parkingData },
     environmentZones(state) { return state.environmentZones },
     selectedZone(state) { return state.selectedZone },
-    municipalities(state) { return state.municipalities },
     parkingsPerMunicipality(state) {
       const environmentZoneNames = state.environmentZones.features.map(x => x.properties.Gemeente.toLowerCase().replace('-', ' '));
       const filteredMunicipalities = {
-        features: state.municipalities.features
+        features: municipalities.features
           .filter(x => environmentZoneNames.includes(x.properties.name.toLowerCase()
           .replace('-', ' ')))
       }
@@ -51,6 +49,11 @@ const store = createStore({
         return map[result].push(parking);
       });
       return map;
+    },
+    selectedZoneParkings(state, getters) {
+      if(!state.selectedZone) return [];
+      return getters.parkingsPerMunicipality[state.selectedZone.properties.name]
+        .filter(p => p.centerCoord.length > 1 && !isNaN(p.centerCoord[0]) && !isNaN(p.centerCoord[1]));
     }
   },
   mutations: {

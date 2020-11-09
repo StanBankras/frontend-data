@@ -19,13 +19,13 @@
       <g class="municipality-parkings">
         <circle
           fill="red"
-          v-for="parking in filteredParkingsMapped"
+          v-for="parking in selectedZoneParkings"
           :key="parking.id"
           r="5"
           :cx="parking.x"
           :cy="parking.y"
           class="active"
-          :class="{ ezone: parking.ezone }"/>
+          :class="{ ezone: parking.ezone }"/>          
       </g>
     </g>
     <g class="environment-zones">
@@ -51,23 +51,22 @@
 // Help from https://makeshiftinsights.com/blog/d3-vue-choropleth/
 import * as d3 from 'd3';
 import * as provinces from '@/assets/data/provinces.json';
+import * as municipalities from '@/assets/data/townships.json';
 import { getCenterCoordFromPolygon } from '@/utils/helpers';
 
 export default {
   computed: {
-    municipalities() {
-      return this.$store.getters.municipalities;
-    },
     projection() {
       return d3.geoMercator()
         .center(this.centerPoint)
         .scale(this.selectedZone ? 50000 : 19000)
     },
+    centerPoint() {
+      if(!this.selectedZone) return [4.69, 52.1];
+      return getCenterCoordFromPolygon(this.selectedZone.geometry.coordinates[0][0]);
+    },
     pathGenerator() {
       return d3.geoPath().projection(this.projection);
-    },
-    provinceData() {
-      return provinces.default.features; // https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/the-netherlands.geojson
     },
     environmentZones() {
       return this.$store.getters.environmentZones.features;
@@ -97,21 +96,8 @@ export default {
     selectedZone() {
       return this.$store.getters.selectedZone;
     },
-    centerPoint() {
-      if(!this.selectedZone) return [4.69, 52.1];
-      return getCenterCoordFromPolygon(this.selectedZone.geometry.coordinates[0][0]);
-    },
-    parkingsPerMunicipality() {
-      const data = this.$store.getters.parkingsPerMunicipality;
-      console.log(data);
-      return data;
-    },
-    filteredParkingData() {
-      return this.selectedZone ? this.parkingsPerMunicipality[this.selectedZone.properties.name] : []
-    },
-    filteredParkingsMapped() {
-      return this.filteredParkingData
-        .filter(p => p.centerCoord.length > 1 && !isNaN(p.centerCoord[0]) && !isNaN(p.centerCoord[1]))
+    selectedZoneParkings() {
+      return this.$store.getters.selectedZoneParkings
         .map(parking => {
           return {
             ezone: parking.environmentalZone,
@@ -119,7 +105,13 @@ export default {
             x: this.projection(parking.centerCoord)[0],
             y: this.projection(parking.centerCoord)[1]
           }
-      });
+        });
+    }
+  },
+  data() {
+    return {
+      municipalities: municipalities.default,
+      provinceData: provinces.default.features
     }
   },
   methods: {
