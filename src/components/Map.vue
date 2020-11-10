@@ -52,7 +52,7 @@
 import { geoMercator, geoPath } from 'd3';
 import * as provinces from '@/assets/data/provinces.json';
 import * as municipalities from '@/assets/data/townships.json';
-import { getCenterCoordFromPolygon } from '@/utils/helpers';
+import { getCenterCoordFromPolygon } from '@/services/zoneservice';
 
 export default {
   computed: {

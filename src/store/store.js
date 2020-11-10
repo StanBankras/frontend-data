@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
 import { fetchEnvironmentalZones } from '../services/zoneservice';
-import { isCoordInEnvironmentalZone, getCenterCoord, isCoordInMunicipality } from '../utils/helpers';
+import { isCoordInEnvironmentalZone, getCenterCoord, isCoordInMunicipality } from '../services/zoneservice';
 import { newDataset } from '../utils/mergedata';
 import { getNpropendata } from '../services/nprservice';
 import { settings } from './settings';
