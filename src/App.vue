@@ -20,8 +20,13 @@
         <table-comp v-if="selectedZone"/>
       </div>
     </div>
-    <div id="map">
-      <map-comp width="1000" height="1000" v-if="ready"/>
+    <div class="map-wrapper">
+      <div id="map">
+        <map-comp class="map" width="1000" height="1000" v-if="ready"/>
+        <div class="loader-container" v-else>
+          <img src="@/assets/img/loader.svg" alt="loader">
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -100,7 +105,8 @@ p {
   max-height: 100vw;
   min-height: 100vw;
   margin: 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: 675px 1fr;
   margin-left: 10rem;
   margin-top: 4rem;
   .left {
@@ -130,10 +136,23 @@ p {
       }
     }
   }
+  .map-wrapper {
+    width: 100%;
+  }
   #map {
-    position: absolute;
-    right: 0;
-    top: 0;
+    .map {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .loader-container {
+      width: 100%;
+      height: 100%;
+      min-height: 80vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }
 </style>
