@@ -36,7 +36,8 @@ const store = createStore({
         .replace('-', ' ')));
     },
     environmentZones(state) { return state.environmentZones },
-    environmentZoneNames(state) { return (state.environmentZones.features || []).map(x => x.properties.Gemeente.toLowerCase().replace('-', ' ')) },
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+    environmentZoneNames(state) { return [... new Set((state.environmentZones.features || []).map(x => x.properties.Gemeente.toLowerCase().replace('-', ' ')))] },
     selectedZone(state) { return state.selectedZone },
     parkingsPerMunicipality(state, getters) {
       const filteredMunicipalities = {

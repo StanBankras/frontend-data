@@ -6,19 +6,19 @@
       <p class="title">Non-environmental zone</p>
     </div>
     <div class="row">
-      <p class="title">% of spots with a charging point</p>
-      <p>{{ chargingPointPercentage.ezone }}</p>
-      <p>{{ chargingPointPercentage.nzone }}</p>
+      <p class="title">Park with charge point</p>
+      <p>{{ Number(chargingPointPercentage.ezone).toFixed(2) }}%</p>
+      <p>{{ Number(chargingPointPercentage.nzone).toFixed(2) }}%</p>
     </div>
     <div class="row">
       <p class="title">€ cost / hour parking</p>
-      <p>9</p>
-      <p>9</p>
+      <p>{{ Number(averageCostPerHour.ezone * 60).toFixed(2) }}</p>
+      <p>{{ Number(averageCostPerHour.nzone * 60).toFixed(2) }}</p>
     </div>
     <div class="row">
-      <p class="title">Parking spots / household</p>
-      <p>9</p>
-      <p>9</p>
+      <p class="title">Park and ride %</p>
+      <p>{{ Number(parkAndRidePercentage.ezone).toFixed(2) }}%</p>
+      <p>{{ Number(parkAndRidePercentage.nzone).toFixed(2) }}%</p>
     </div>
   </div>
 </template>
@@ -38,9 +38,34 @@ export default {
     chargingPointPercentage() {
       const parkings = this.selectedParkingsMapped;
       return {
-        ezone: parkings.ezone.filter(p => p.chargingPoints).length / parkings.ezone.length * 100,
-        nzone: parkings.nzone.filter(p => p.chargingPoints).length / parkings.nzone.length * 100,
+        ezone: !this.hasItems(parkings.ezone) ? 0 : parkings.ezone.filter(p => p.chargingPoints && Number(p.chargingPoints) > 0).length / parkings.ezone.length * 100,
+        nzone: !this.hasItems(parkings.nzone) ? 0 : parkings.nzone.filter(p => p.chargingPoints && Number(p.chargingPoints) > 0).length / parkings.nzone.length * 100,
       }
+    },
+    averageCostPerHour() {
+      const parkings = this.selectedParkingsMapped;
+      return {
+        ezone: !this.hasItems(parkings.ezone) ? 0 : parkings.ezone.reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.ezone.length,
+        nzone: !this.hasItems(parkings.nzone) ? 0 : parkings.nzone.reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.nzone.length,
+      }
+    },
+    parkAndRidePercentage() {
+      const parkings = this.selectedParkingsMapped;
+      return {
+        ezone: !this.hasItems(parkings.ezone) ? 0 : parkings.ezone.reduce((acc, curr) => acc + (this.hasUsage(curr) && this.isParkAndRide(curr) ? 1 : 0), 0) / parkings.ezone.length * 100,
+        nzone: !this.hasItems(parkings.nzone) ? 0 : parkings.nzone.reduce((acc, curr) => acc + (this.hasUsage(curr) && this.isParkAndRide(curr) ? 1 : 0), 0) / parkings.nzone.length * 100,
+      }
+    }
+  },
+  methods: {
+    hasUsage(parking) {
+      return parking.specifications && parking.specifications[0].usage;
+    },
+    isParkAndRide(parking) {
+      return parking.specifications[0].usage.toLowerCase().includes('park') && parking.specifications[0].usage.toLowerCase().includes('ride');
+    },
+    hasItems(array) {
+      return array.length > 0;
     }
   }
 }

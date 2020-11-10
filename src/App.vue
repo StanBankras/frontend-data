@@ -10,6 +10,7 @@
           <p>Statistics for</p>
           <select @change="selectMunicipality()" v-model="zone" name="environmentZone" id="environmentZone">
             <option
+            style="text-transform: capitalize;"
               v-for="name in environmentZoneNames"
               :key="name"
               :value="name">{{ name }}</option>

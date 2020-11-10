@@ -49,7 +49,7 @@
 
 <script>
 // Help from https://makeshiftinsights.com/blog/d3-vue-choropleth/
-import * as d3 from 'd3';
+import { geoMercator, geoPath } from 'd3';
 import * as provinces from '@/assets/data/provinces.json';
 import * as municipalities from '@/assets/data/townships.json';
 import { getCenterCoordFromPolygon } from '@/utils/helpers';
@@ -57,16 +57,16 @@ import { getCenterCoordFromPolygon } from '@/utils/helpers';
 export default {
   computed: {
     projection() {
-      return d3.geoMercator()
+      return geoMercator()
         .center(this.centerPoint)
-        .scale(this.selectedZone ? 50000 : 19000)
+        .scale(this.selectedZone ? 50000 : 19000);
     },
     centerPoint() {
       if(!this.selectedZone) return [4.69, 52.1];
       return getCenterCoordFromPolygon(this.selectedZone.geometry.coordinates[0][0]);
     },
     pathGenerator() {
-      return d3.geoPath().projection(this.projection);
+      return geoPath().projection(this.projection);
     },
     environmentZones() {
       return this.$store.getters.environmentZones.features;
