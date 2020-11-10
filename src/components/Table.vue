@@ -40,22 +40,22 @@ export default {
     chargingPointPercentage() {
       const parkings = this.selectedParkingsMapped;
       return {
-        ezone: !hasItems(parkings.ezone) ? 0 : parkings.ezone.filter(p => p.chargingPoints && Number(p.chargingPoints) > 0).length / parkings.ezone.length * 100,
-        nzone: !hasItems(parkings.nzone) ? 0 : parkings.nzone.filter(p => p.chargingPoints && Number(p.chargingPoints) > 0).length / parkings.nzone.length * 100,
+        ezone: !hasItems(parkings.ezone) ? 0 : this.getParkingsWithChargingPointsPercentage(parkings.ezone),
+        nzone: !hasItems(parkings.nzone) ? 0 : this.getParkingsWithChargingPointsPercentage(parkings.nzone),
       }
     },
     averageCostPerHour() {
       const parkings = this.selectedParkingsMapped;
       return {
-        ezone: !hasItems(parkings.ezone) ? 0 : parkings.ezone.reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.ezone.length,
-        nzone: !hasItems(parkings.nzone) ? 0 : parkings.nzone.reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.nzone.length,
+        ezone: !hasItems(parkings.ezone) ? 0 : this.getAverageCostPerHour(parkings.ezone),
+        nzone: !hasItems(parkings.nzone) ? 0 : this.getAverageCostPerHour(parkings.nzone),
       }
     },
     parkAndRidePercentage() {
       const parkings = this.selectedParkingsMapped;
       return {
-        ezone: !hasItems(parkings.ezone) ? 0 : parkings.ezone.reduce((acc, curr) => acc + (this.hasUsage(curr) && this.isParkAndRide(curr) ? 1 : 0), 0) / parkings.ezone.length * 100,
-        nzone: !hasItems(parkings.nzone) ? 0 : parkings.nzone.reduce((acc, curr) => acc + (this.hasUsage(curr) && this.isParkAndRide(curr) ? 1 : 0), 0) / parkings.nzone.length * 100,
+        ezone: !hasItems(parkings.ezone) ? 0 : this.getParkAndRidePrecentage(parkings.ezone),
+        nzone: !hasItems(parkings.nzone) ? 0 : this.getParkAndRidePrecentage(parkings.nzone),
       }
     }
   },
@@ -65,6 +65,18 @@ export default {
     },
     isParkAndRide(parking) {
       return parking.specifications[0].usage.toLowerCase().includes('park') && parking.specifications[0].usage.toLowerCase().includes('ride');
+    },
+    getParkAndRidePrecentage(parkings) {
+      return parkings
+        .reduce((acc, curr) => acc + (this.hasUsage(curr) && this.isParkAndRide(curr) ? 1 : 0), 0) / parkings.length * 100;
+    },
+    getAverageCostPerHour(parkings) {
+      return parkings
+        .reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.length;
+    },
+    getParkingsWithChargingPointsPercentage(parkings) {
+      return parkings
+        .filter(p => p.chargingPoints && Number(p.chargingPoints) > 0).length / parkings.length * 100;
     }
   }
 }
