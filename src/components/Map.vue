@@ -18,7 +18,6 @@
       </g>
       <g class="municipality-parkings">
         <circle
-          fill="red"
           v-for="parking in selectedZoneParkings"
           :key="parking.id"
           r="5"
@@ -127,6 +126,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+* {
+  transition: 1s ease-in-out;
+}
 .provinces {
   fill: #ddb89b;
   stroke-width: 5px;
@@ -146,6 +148,16 @@ export default {
     &.ezone {
       fill: lightgreen;
       z-index: 100;
+    }
+  }
+}
+.municipality-parkings {
+  circle {
+    opacity: 0;
+    &.active {
+      transition: .5s !important;
+      transition-delay: 1s !important;
+      opacity: 100;
     }
   }
 }

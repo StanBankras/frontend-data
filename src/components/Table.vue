@@ -12,8 +12,8 @@
     </div>
     <div class="row">
       <p class="title">€ cost / hour parking</p>
-      <p>{{ Number(averageCostPerHour.ezone * 60).toFixed(2) }}</p>
-      <p>{{ Number(averageCostPerHour.nzone * 60).toFixed(2) }}</p>
+      <p>{{ Number(averageCostPerHour.ezone).toFixed(2) }}</p>
+      <p>{{ Number(averageCostPerHour.nzone).toFixed(2) }}</p>
     </div>
     <div class="row">
       <p class="title">Park and ride %</p>
@@ -72,7 +72,7 @@ export default {
     },
     getAverageCostPerHour(parkings) {
       return parkings
-        .reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.length;
+        .reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.length * 60;
     },
     getParkingsWithChargingPointsPercentage(parkings) {
       return parkings
