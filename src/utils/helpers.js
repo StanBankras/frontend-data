@@ -111,3 +111,7 @@ export function isCoordInMunicipality(centerCoord, geojson) {
   return zone;
 }
 
+export function hasItems(array) {
+  return array.length > 0;
+}
+

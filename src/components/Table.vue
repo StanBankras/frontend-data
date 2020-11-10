@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { hasItems } from '@/utils/helpers.js';
+ 
 export default {
   computed: {
     selectedParkings() {
@@ -38,22 +40,22 @@ export default {
     chargingPointPercentage() {
       const parkings = this.selectedParkingsMapped;
       return {
-        ezone: !this.hasItems(parkings.ezone) ? 0 : parkings.ezone.filter(p => p.chargingPoints && Number(p.chargingPoints) > 0).length / parkings.ezone.length * 100,
-        nzone: !this.hasItems(parkings.nzone) ? 0 : parkings.nzone.filter(p => p.chargingPoints && Number(p.chargingPoints) > 0).length / parkings.nzone.length * 100,
+        ezone: !hasItems(parkings.ezone) ? 0 : parkings.ezone.filter(p => p.chargingPoints && Number(p.chargingPoints) > 0).length / parkings.ezone.length * 100,
+        nzone: !hasItems(parkings.nzone) ? 0 : parkings.nzone.filter(p => p.chargingPoints && Number(p.chargingPoints) > 0).length / parkings.nzone.length * 100,
       }
     },
     averageCostPerHour() {
       const parkings = this.selectedParkingsMapped;
       return {
-        ezone: !this.hasItems(parkings.ezone) ? 0 : parkings.ezone.reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.ezone.length,
-        nzone: !this.hasItems(parkings.nzone) ? 0 : parkings.nzone.reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.nzone.length,
+        ezone: !hasItems(parkings.ezone) ? 0 : parkings.ezone.reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.ezone.length,
+        nzone: !hasItems(parkings.nzone) ? 0 : parkings.nzone.reduce((acc, curr) => acc + (curr.overallAverageTariff ? curr.overallAverageTariff : 0), 0) / parkings.nzone.length,
       }
     },
     parkAndRidePercentage() {
       const parkings = this.selectedParkingsMapped;
       return {
-        ezone: !this.hasItems(parkings.ezone) ? 0 : parkings.ezone.reduce((acc, curr) => acc + (this.hasUsage(curr) && this.isParkAndRide(curr) ? 1 : 0), 0) / parkings.ezone.length * 100,
-        nzone: !this.hasItems(parkings.nzone) ? 0 : parkings.nzone.reduce((acc, curr) => acc + (this.hasUsage(curr) && this.isParkAndRide(curr) ? 1 : 0), 0) / parkings.nzone.length * 100,
+        ezone: !hasItems(parkings.ezone) ? 0 : parkings.ezone.reduce((acc, curr) => acc + (this.hasUsage(curr) && this.isParkAndRide(curr) ? 1 : 0), 0) / parkings.ezone.length * 100,
+        nzone: !hasItems(parkings.nzone) ? 0 : parkings.nzone.reduce((acc, curr) => acc + (this.hasUsage(curr) && this.isParkAndRide(curr) ? 1 : 0), 0) / parkings.nzone.length * 100,
       }
     }
   },
@@ -63,9 +65,6 @@ export default {
     },
     isParkAndRide(parking) {
       return parking.specifications[0].usage.toLowerCase().includes('park') && parking.specifications[0].usage.toLowerCase().includes('ride');
-    },
-    hasItems(array) {
-      return array.length > 0;
     }
   }
 }

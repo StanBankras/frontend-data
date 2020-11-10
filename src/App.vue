@@ -35,23 +35,7 @@ export default {
   components: {
     TableComp, MapComp
   },
-  name: "App",
-  data() {
-    return {
-      ready: false,
-      zone: undefined,
-      municipalities: municipalities.default
-    }
-  },
-  mounted() {
-    this.$store.dispatch("initializeData").then(() => {
-      this.ready = true;
-    });
-  },
   computed: {
-    data() {
-      return this.$store.getters.parkingData;
-    },
     selectedZone() {
       return this.$store.getters.selectedZone;
     },
@@ -65,6 +49,18 @@ export default {
       return this.municipalities.features
         .filter(x => this.environmentZoneNames.includes(x.properties.name.toLowerCase().replace('-', ' ')));
     },
+  },
+  data() {
+    return {
+      ready: false,
+      zone: undefined,
+      municipalities: municipalities.default
+    }
+  },
+  mounted() {
+    this.$store.dispatch("initializeData").then(() => {
+      this.ready = true;
+    });
   },
   methods: {
     selectMunicipality() {
