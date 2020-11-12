@@ -1,6 +1,6 @@
 <template>
   <svg ref="svg" width="100%" height="100%">
-    <g class="provinces">
+    <g class="provinces transition">
       <path
         v-for="province in provinceData"
         :key="province.geometry"
@@ -8,7 +8,7 @@
       />
     </g>
     <g class="parkings">
-      <g>
+      <g class="transition">
         <circle
           v-for="parking in parkingsMapped"
           :key="parking.id"
@@ -17,24 +17,26 @@
           :cy="parking.y"/>
       </g>
       <g class="municipality-parkings">
-        <circle
-          v-for="parking in selectedZoneParkings"
-          :key="parking.id"
-          r="5"
-          :cx="parking.x"
-          :cy="parking.y"
-          class="active"
-          :class="{ ezone: parking.ezone }"/>          
+        <transition-group name="fade" tag="g">
+          <circle
+            v-for="parking in selectedZoneParkings"
+            :key="parking.id"
+            r="5"
+            :cx="parking.x"
+            :cy="parking.y"
+            class="active"
+            :class="{ ezone: parking.ezone }"/>   
+        </transition-group>       
       </g>
     </g>
-    <g class="environment-zones">
+    <g class="environment-zones transition">
       <path
         v-for="zone in environmentZones"
         :key="zone.geometry.coordinates"
         :d="pathGenerator(zone)"
       />
     </g>
-    <g class="municipalities">
+    <g class="municipalities transition">
       <path
         v-for="zone in environmentZoneCities"
         :key="zone.properties.code"
@@ -126,7 +128,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-* {
+.transition, .transition g, .transition path, .transition circle {
   transition: 1s ease-in-out;
 }
 .provinces {
@@ -151,16 +153,6 @@ export default {
     }
   }
 }
-.municipality-parkings {
-  circle {
-    opacity: 0;
-    &.active {
-      transition: .5s !important;
-      transition-delay: 1s !important;
-      opacity: 100;
-    }
-  }
-}
 .municipalities {
   path {
     stroke: black;
@@ -176,17 +168,20 @@ export default {
     }
   }
 }
-.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 2px;
+.fade-enter {
+  opacity: 0;
 }
-.link-move {
-  transition: d 10s;
+.fade-enter-active {
+  animation: fadeIn 2s linear;
+}
+.fade-leave, .fade-leave-active, .fade-leave-to {
+  transition: 0s;
+  opacity: 0;
 }
 
-.link-enter-active,
-.link-leave-active {
-  transition: d 10s transform 10s;
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  50%   { opacity: 0; }
+  100%   { opacity: 1; }
 }
 </style>
