@@ -15,20 +15,18 @@
           r="5"
           :cx="parking.x"
           :cy="parking.y"/>
-      </g> -->
-      <g class="municipality-parkings">
-        <transition-group name="fade" tag="g">
-          <circle
-            v-for="parking in selectedZoneParkings"
-            :key="parking.id"
-            r="3"
-            :cx="parking.x"
-            :cy="parking.y"
-            class="active"
-            :class="{ ezone: parking.ezone }"/>   
-        </transition-group>       
-      </g>
+      </g> -->  
     </g>
+    <transition-group class="municipality-parkings" name="fade" tag="g">
+      <circle
+        v-for="parking in selectedZoneParkings"
+        :key="parking.id"
+        r="3"
+        :cx="parking.x"
+        :cy="parking.y"
+        class="active"
+        :class="{ ezone: parking.ezone }"/>   
+    </transition-group> 
     <g class="environment-zones transition">
       <path
         v-for="zone in environmentZones"
@@ -136,9 +134,7 @@ export default {
     },
     resetZoom() {
       // https://stackoverflow.com/questions/48790190/how-to-reset-zoom-in-d3-js
-      selectAll('svg g').transition()
-      .duration(750)
-      .call(this.zoom.transform, zoomIdentity);
+      selectAll('svg g').call(this.zoom.transform, zoomIdentity);
     }
   }
 }
@@ -162,7 +158,8 @@ export default {
     stroke-width: 3px;
   }
 }
-.parkings {
+.municipality-parkings {
+  transition: .5s ease-in-out;
   circle {
     fill: rgba(0, 0, 0, 0.1);
     &.active {
