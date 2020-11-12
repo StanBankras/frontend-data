@@ -42,7 +42,7 @@ Here's how to start using this project.
 ### Install
 1. Clone this repository
 ```git
-git clone git@github.com:StanBankras/functional-programming.git
+git clone git@github.com:StanBankras/frontend-data.git
 ```
 2. Install packages
 ```
@@ -52,9 +52,9 @@ yarn install
 ```
 3. Run the project in a terminal
 ```
-npm run dev
+npm run serve
 // or 
-yarn dev
+yarn serve
 ```
 
 ## Acknowledgements
