@@ -2,8 +2,8 @@
   <div class="table">
     <div class="row">
       <p class="title">Average</p>
-      <p class="title">Environmental zone</p>
-      <p class="title">Non-environmental zone</p>
+      <p class="title green">Environmental zone</p>
+      <p class="title red">Non-environmental zone</p>
     </div>
     <div class="row">
       <p class="title">Park with charge point</p>
@@ -96,6 +96,14 @@ export default {
       padding: 0.8rem 1rem;
       &.title {
         font-weight: bold;
+        background-color: #e2dbc8;
+        color: #716252;
+        &.green {
+          color: rgb(47, 151, 47);
+        }
+        &.red {
+          color: red;
+        }
       }
     }
   }
