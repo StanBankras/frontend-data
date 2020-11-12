@@ -8,20 +8,20 @@
       />
     </g>
     <g class="parkings">
-      <g class="transition">
+      <!-- <g class="transition">
         <circle
           v-for="parking in parkingsMapped"
           :key="parking.id"
           r="5"
           :cx="parking.x"
           :cy="parking.y"/>
-      </g>
+      </g> -->
       <g class="municipality-parkings">
         <transition-group name="fade" tag="g">
           <circle
             v-for="parking in selectedZoneParkings"
             :key="parking.id"
-            r="5"
+            r="3"
             :cx="parking.x"
             :cy="parking.y"
             class="active"
@@ -33,6 +33,7 @@
       <path
         v-for="zone in environmentZones"
         :key="zone.geometry.coordinates"
+        :class="{ selected: zone.properties.Gemeente.toLowerCase().replace('-', '') === (selectedZone ? selectedZone.properties.name.toLowerCase().replace('-', '') : '') }"
         :d="pathGenerator(zone)"
       />
     </g>
@@ -70,6 +71,7 @@ export default {
       return geoPath().projection(this.projection);
     },
     environmentZones() {
+      console.log(this.$store.getters.environmentZones.features);
       return this.$store.getters.environmentZones.features;
     },
     environmentZoneNames() {
@@ -137,9 +139,13 @@ export default {
   stroke: #fffaec;
 }
 .environment-zones {
-  fill: transparent;
-  stroke: rgb(124, 0, 0);
-  stroke-width: 2px;
+  fill: green;
+  transition: 1s;
+  .selected {
+    fill: transparent;
+    stroke: rgb(0, 238, 255);
+    stroke-width: 3px;
+  }
 }
 .parkings {
   circle {
