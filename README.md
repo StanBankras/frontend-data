@@ -61,6 +61,9 @@ yarn serve
 * [TimonWeb](https://timonweb.com/javascript/how-to-enable-es6-imports-in-nodejs/) for setting up my Node development environment where I could use ES6 functionality
 * [StackOverflow](https://stackoverflow.com/) for small & quick bug fixes
 * [Makeshiftinsights for creating a map in Vue + D3](https://makeshiftinsights.com/blog/d3-vue-choropleth/)
+* [webuildinternet for geojson data of NL](https://www.webuildinternet.com/articles/2015-07-19-geojson-data-of-the-netherlands/)
+* Laurens Aarnoudse for helping me find the API associated with geojson data about Dutch environmental zones
+* [Kris Foster first view on D3 with a barchart](https://www.youtube.com/watch?v=BDpBAFvdjYo)
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
