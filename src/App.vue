@@ -37,6 +37,10 @@
       </div>
     </div>
   </div>
+  <p style="margin-left: 10rem; margin-top: 4rem;">
+    Example I used for the map:
+    <a href="https://makeshiftinsights.com/blog/d3-vue-choropleth/" target="_blank">https://makeshiftinsights.com/blog/d3-vue-choropleth/</a>
+  </p>
 </template>
 
 <script>
@@ -98,7 +102,6 @@ export default {
 <style lang="scss">
 body {
   margin: 0;
-  min-height: 100vw;
   max-height: 100vw;
   background-color: #fffaec;
 }
@@ -120,7 +123,6 @@ p {
 }
 #main-wrapper {
   max-height: 100vw;
-  min-height: 100vw;
   margin: 0;
   display: grid;
   grid-template-columns: 675px 1fr;
@@ -156,6 +158,8 @@ p {
   }
   .map-wrapper {
     width: 100%;
+    max-height: 1000px;
+    overflow: hidden;
   }
   #map {
     .map {
