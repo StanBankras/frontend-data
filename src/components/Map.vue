@@ -1,55 +1,69 @@
 <template>
-  <svg ref="svg" width="100%" height="100%">
-    <g class="provinces transition">
-      <path
-        v-for="province in provinceData"
-        :key="province.geometry"
-        :d="pathGenerator(province)"
-      />
-    </g>
-    <g class="parkings">
-      <!-- <g class="transition">
+  <div class="wrap-svg">
+    <svg ref="svg" width="100%" height="100%">
+      <g class="provinces transition">
+        <path
+          v-for="province in provinceData"
+          :key="province.geometry"
+          :d="pathGenerator(province)"
+        />
+      </g>
+      <g class="municipalities transition">
+        <path
+          v-for="zone in environmentZoneCities"
+          :key="zone.properties.code"
+          @click="selectMunicipality(zone)"
+          :d="pathGenerator(zone)"
+          :class="{ active: zone.properties.name === (selectedZone ? selectedZone.properties.name : '') }"
+        />
+      </g>
+      <g class="parkings">
+        <!-- <g class="transition">
+          <circle
+            v-for="parking in parkingsMapped"
+            :key="parking.id"
+            r="5"
+            :cx="parking.x"
+            :cy="parking.y"/>
+        </g> -->  
+      </g>
+      <transition-group class="municipality-parkings" name="fade" tag="g">
         <circle
-          v-for="parking in parkingsMapped"
+          v-for="parking in selectedZoneParkings"
           :key="parking.id"
-          r="5"
+          r="3"
           :cx="parking.x"
-          :cy="parking.y"/>
-      </g> -->  
-    </g>
-    <transition-group class="municipality-parkings" name="fade" tag="g">
-      <circle
-        v-for="parking in selectedZoneParkings"
-        :key="parking.id"
-        r="3"
-        :cx="parking.x"
-        :cy="parking.y"
-        class="active"
-        :class="{ ezone: parking.ezone }"/>   
-    </transition-group> 
-    <g class="environment-zones transition">
-      <path
-        v-for="zone in environmentZones"
-        :key="zone.geometry.coordinates"
-        :class="{ selected: zone.properties.Gemeente.toLowerCase().replace('-', '') === (selectedZone ? selectedZone.properties.name.toLowerCase().replace('-', '') : '') }"
-        :d="pathGenerator(zone)"
-      />
-    </g>
-    <g class="municipalities transition">
-      <path
-        v-for="zone in environmentZoneCities"
-        :key="zone.properties.code"
-        @click="selectMunicipality(zone)"
-        :d="pathGenerator(zone)"
-        :class="{ active: zone.properties.name === (selectedZone ? selectedZone.properties.name : '') }"
-      />
-    </g>
-  </svg>
+          :cy="parking.y"
+          class="active"
+          :class="{ ezone: parking.ezone }"/>   
+      </transition-group> 
+      <g class="environment-zones transition">
+        <path
+          v-for="zone in environmentZones"
+          :key="zone.geometry.coordinates"
+          :class="{ selected: zone.properties.Gemeente.toLowerCase().replace('-', '') === (selectedZone ? selectedZone.properties.name.toLowerCase().replace('-', '') : '') }"
+          :d="pathGenerator(zone)"
+        />
+      </g>
+    </svg>
+    <transition name="fade">
+      <div v-if="selectedZone" class="labels">
+        <p>
+          <span class="circle red"></span>
+          Parking outside environmental zone
+        </p>
+        <p>
+          <span class="circle green"></span>
+          Parking inside environmental zone
+        </p>
+      </div>  
+    </transition>  
+  </div>
 </template>
 
 <script>
 // Help from https://makeshiftinsights.com/blog/d3-vue-choropleth/
-import { geoMercator, geoPath, zoom, selectAll, zoomIdentity } from 'd3';
+import { geoMercator, geoPath, zoom, selectAll, select, zoomIdentity } from 'd3';
 import * as provinces from '@/assets/data/provinces.json';
 import * as municipalities from '@/assets/data/townships.json';
 import { getCenterCoordFromPolygon } from '@/services/zoneservice';
@@ -109,7 +123,8 @@ export default {
         });
     },
     zoom() {
-      return zoom().on("zoom", (e) => this.zoomed(e));
+      return zoom()
+        .on('zoom', (e) => this.zoomed(e));
     }
   },
   data() {
@@ -119,7 +134,8 @@ export default {
     }
   },
   mounted() {
-    selectAll('svg g').call(this.zoom);
+    select('svg')
+      .call(this.zoom);
   },
   methods: {
     selectMunicipality(zone) {
@@ -142,24 +158,27 @@ export default {
 
 <style lang="scss" scoped>
 .transition, .transition g, .transition path, .transition circle {
-  transition: .5s ease-in-out;
+  transition: .3s ease-in-out;
 }
 .provinces {
   fill: #ddb89b;
   stroke-width: 5px;
   stroke: #fffaec;
+  cursor: grabbing;
 }
 .environment-zones {
-  fill: green;
-  transition: .5s ease-in-out;
+  fill: rgb(16, 202, 16);
+  transition: .3s ease-in-out;
+  pointer-events: none;
   .selected {
     fill: transparent;
-    stroke: rgb(0, 238, 255);
+    stroke: rgb(16, 202, 16);
     stroke-width: 3px;
   }
 }
 .municipality-parkings {
-  transition: .5s ease-in-out;
+  transition: .3s ease-in-out;
+  pointer-events: none;
   circle {
     fill: rgba(0, 0, 0, 0.1);
     &.active {
@@ -175,7 +194,7 @@ export default {
   path {
     stroke: black;
     stroke-width: 1px;
-    fill: rgba(255, 255, 0, 0.438);
+    fill: rgb(255 227 205);
     &:hover {
       stroke-width: 3px;
       cursor: pointer;
@@ -186,6 +205,44 @@ export default {
     }
   }
 }
+
+.wrap-svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.labels {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #fffaec;
+  padding: 1rem;
+  p {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    .circle {
+      display: block;
+      border-radius: 50%;
+      background-color: black;
+      width: 15px;
+      height: 15px;
+      margin-right: 0.5rem;
+      &.red {
+        background-color: red;
+      }
+      &.green {
+        background-color: lightgreen;
+      }
+    }
+  }
+}
+
 .fade-enter {
   opacity: 0;
 }
