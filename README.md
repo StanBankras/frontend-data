@@ -2,6 +2,8 @@
 
 ![design](https://i.imgur.com/a4vntCt.jpg)
 
+### [Live version](https://stanbankras.github.io/frontend-data/)
+
 ## Description
 
 During the functional programming course @CMDA-TT, the goal is to write code that cleans data with functional patterns. One of the most important things however is to describe the used patterns and show my understanding and progress in the subject.
