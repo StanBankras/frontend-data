@@ -51,7 +51,7 @@
 
 <script>
 // Help from https://makeshiftinsights.com/blog/d3-vue-choropleth/
-import { geoMercator, geoPath } from 'd3';
+import { geoMercator, geoPath, zoom, selectAll, zoomIdentity } from 'd3';
 import * as provinces from '@/assets/data/provinces.json';
 import * as municipalities from '@/assets/data/townships.json';
 import { getCenterCoordFromPolygon } from '@/services/zoneservice';
@@ -71,7 +71,6 @@ export default {
       return geoPath().projection(this.projection);
     },
     environmentZones() {
-      console.log(this.$store.getters.environmentZones.features);
       return this.$store.getters.environmentZones.features;
     },
     environmentZoneNames() {
@@ -97,6 +96,7 @@ export default {
       });
     },
     selectedZone() {
+      this.resetZoom();
       return this.$store.getters.selectedZone;
     },
     selectedZoneParkings() {
@@ -109,13 +109,19 @@ export default {
             y: this.projection(parking.centerCoord)[1]
           }
         });
+    },
+    zoom() {
+      return zoom().on("zoom", (e) => this.zoomed(e));
     }
   },
   data() {
     return {
       municipalities: municipalities.default,
-      provinceData: provinces.default.features
+      provinceData: provinces.default.features,
     }
+  },
+  mounted() {
+    selectAll('svg g').call(this.zoom);
   },
   methods: {
     selectMunicipality(zone) {
@@ -124,6 +130,15 @@ export default {
       } else {
         this.$store.commit('SET_SELECTED_ZONE', zone);
       }
+    },
+    zoomed(e) {
+      selectAll('svg g').attr("transform", e.transform);
+    },
+    resetZoom() {
+      // https://stackoverflow.com/questions/48790190/how-to-reset-zoom-in-d3-js
+      selectAll('svg g').transition()
+      .duration(750)
+      .call(this.zoom.transform, zoomIdentity);
     }
   }
 }
@@ -131,7 +146,7 @@ export default {
 
 <style lang="scss" scoped>
 .transition, .transition g, .transition path, .transition circle {
-  transition: 1s ease-in-out;
+  transition: .5s ease-in-out;
 }
 .provinces {
   fill: #ddb89b;
@@ -140,7 +155,7 @@ export default {
 }
 .environment-zones {
   fill: green;
-  transition: 1s;
+  transition: .5s ease-in-out;
   .selected {
     fill: transparent;
     stroke: rgb(0, 238, 255);
@@ -178,7 +193,7 @@ export default {
   opacity: 0;
 }
 .fade-enter-active {
-  animation: fadeIn 2s linear;
+  animation: fadeIn 1.5s linear;
 }
 .fade-leave, .fade-leave-active, .fade-leave-to {
   transition: 0s;
@@ -187,7 +202,7 @@ export default {
 
 @keyframes fadeIn {
   0% { opacity: 0; }
-  50%   { opacity: 0; }
-  100%   { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
 }
 </style>
