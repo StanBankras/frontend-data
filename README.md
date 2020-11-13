@@ -66,6 +66,7 @@ yarn serve
 * [webuildinternet for geojson data of NL](https://www.webuildinternet.com/articles/2015-07-19-geojson-data-of-the-netherlands/)
 * Laurens Aarnoudse for helping me find the API associated with geojson data about Dutch environmental zones
 * [Kris Foster first view on D3 with a barchart](https://www.youtube.com/watch?v=BDpBAFvdjYo)
+* [Roli Dori for publishing Vue to Github Pages](https://medium.com/@Roli_Dori/deploy-vue-cli-3-project-to-github-pages-ebeda0705fbd)
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
