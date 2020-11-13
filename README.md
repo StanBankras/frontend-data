@@ -29,6 +29,11 @@ _My expectation:_ I expect the cost of parking to be higher if there are more ch
 
 [Data I expect to use to answer the questions can be found here](https://github.com/StanBankras/functional-programming/wiki/Concept#data-i-expect-to-use)
 
+## What I do with invalid or undefined values in data
+If there's an invalid of undefined value in a data point, it will stay in the array of items because it is part of the dataset. Wherever averages are created using this data, undefined or invalid items will be counted as 0 or false, and will still be counted in the average.
+
+The only criteria my data has is that there has to be a geographical location attached, those that don't have this are not used in my visualisation or calculation at all.
+
 
 ## Most interesting functions
 * Getting tariff data per parking area: [click here](https://github.com/StanBankras/functional-programming/wiki/Parking-tariffs)
