@@ -17,16 +17,6 @@
           :class="{ active: zone.properties.name === (selectedZone ? selectedZone.properties.name : '') }"
         />
       </g>
-      <g class="parkings">
-        <!-- <g class="transition">
-          <circle
-            v-for="parking in parkingsMapped"
-            :key="parking.id"
-            r="5"
-            :cx="parking.x"
-            :cy="parking.y"/>
-        </g> -->  
-      </g>
       <transition-group class="municipality-parkings" name="fade" tag="g">
         <circle
           v-for="parking in selectedZoneParkings"
@@ -92,20 +82,6 @@ export default {
       return this.municipalities.features
         .filter(x => this.environmentZoneNames.includes(x.properties.name.toLowerCase()
         .replace('-', ' ')));
-    },
-    parkingData() {
-      return this.$store.getters.parkingData;
-    },
-    parkingsMapped() {
-      return this.parkingData
-        .filter(p => p.centerCoord.length > 1 && !isNaN(p.centerCoord[0]) && !isNaN(p.centerCoord[1]))
-        .map(parking => {
-          return {
-            id: parking.areaId,
-            x: this.projection(parking.centerCoord)[0],
-            y: this.projection(parking.centerCoord)[1]
-          }
-      });
     },
     selectedZone() {
       this.resetZoom();
